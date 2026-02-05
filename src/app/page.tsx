@@ -1,5 +1,4 @@
 import {Button} from "@/components/ui/button"; 
-import { TestComponent } from "@/features/test";
 export default function Home() {
   return (
     <div className="flex gap-4">
@@ -23,8 +22,7 @@ export default function Home() {
       </Button>
       <Button variant={"teritary"}>
         Teritary
-      </Button>
-      <TestComponent /> 
+      </Button>  
     </div>
   );
 }
