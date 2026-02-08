@@ -37,7 +37,7 @@ export const Navigation =() =>{
                 const isActive = false
                 const Icon = isActive? item.activeIcon : item.icon
 
-                return(
+                return(  
                     <Link key={item.href} href={item.href}>
                         <div className={cn(
                             "flex items-center gap-2.5 p-2.5 rounded-md font-medium hover:text-primary text-neutral-500",
