@@ -9,33 +9,36 @@ import { ID } from "node-appwrite";
 const app = new Hono()
     .post(
         "/",
-        zValidator("json", createWorkspaceSchema),
+        zValidator("form", createWorkspaceSchema),
         sessionMiddleware,
-        async(c) => {
+        async (c) => {
             const databases = c.get("databases")
             const storage = c.get("storage")
             const user = c.get("user")
 
-            const { name, image } = c.req.valid("json")
+            const { name, image } = c.req.valid("form")
 
             let uploadedImageUrl: string | undefined;
 
-            if(image instanceof File){
+            if (image instanceof File) {
                 const file = await storage.createFile(
                     IMAGES_BUCKET_ID,
                     ID.unique(),
-                    image,
+                    image
                 )
 
-                const arrayBuffer = await storage.getFilePreview(
-                    IMAGES_BUCKET_ID,
-                    file.$id,
-                )
+                const previewUrl =
+                    `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${IMAGES_BUCKET_ID}/files/${file.$id}/preview?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`
 
-                uploadedImageUrl = `data:image/png;base64${Buffer.from(arrayBuffer).toString("base64")}`
+                const res = await fetch(previewUrl)
+                const arrayBuffer = await res.arrayBuffer()
+
+                uploadedImageUrl =
+                    `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`
             }
 
-            const workspace =  await databases.createDocument(
+
+            const workspace = await databases.createDocument(
                 DATABASE_ID,
                 WORKSPACES_ID,
                 ID.unique(),
@@ -46,7 +49,7 @@ const app = new Hono()
                 }
             )
 
-            return c.json({ data:workspace })
+            return c.json({ data: workspace })
         }
     )
 
