@@ -7,6 +7,17 @@ import { DATABASE_ID, IMAGES_BUCKET_ID, WORKSPACES_ID } from "@/config";
 import { ID } from "node-appwrite";
 
 const app = new Hono()
+    .get("/", sessionMiddleware, async (c) => {
+        const databases = c.get("databases")
+
+        const workspaces = await databases.listDocuments(
+            DATABASE_ID,
+            WORKSPACES_ID,
+
+        )
+
+        return c.json({ data: workspaces.documents })
+    })
     .post(
         "/",
         zValidator("form", createWorkspaceSchema),
@@ -26,15 +37,14 @@ const app = new Hono()
                     ID.unique(),
                     image
                 )
-
-                const previewUrl =
-                    `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${IMAGES_BUCKET_ID}/files/${file.$id}/preview?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`
-
-                const res = await fetch(previewUrl)
-                const arrayBuffer = await res.arrayBuffer()
-
                 uploadedImageUrl =
-                    `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`
+                    `https://cloud.appwrite.io/v1/storage/buckets/${IMAGES_BUCKET_ID}` +
+                    `/files/${file.$id}/view` +
+                    `?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`
+
+
+
+
             }
 
 
