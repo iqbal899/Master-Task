@@ -24,6 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 import { on } from "events";
+import { cn } from "@/lib/utils";
 
 
 interface CreateWorkspaceFormProps {
@@ -168,6 +169,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                                 variant="secondary"
                                 onClick={onCancel}
                                 disabled={isPending}
+                                className={cn(!onCancel && "invisible")}
                             >
                                 Cancel
                             </Button>
