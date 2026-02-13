@@ -7,7 +7,10 @@ const WorkspaceIdPage = async () => {
   if (!user) redirect("/sign-in")
 
   return (
-    <div>WorkspaceIdPage</div>
+    <div>
+      Workspace Id 
+
+    </div>
   )
 }
 
