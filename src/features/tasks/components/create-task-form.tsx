@@ -184,7 +184,7 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
                                                 IN_PROGRESS
                                             </SelectItem>
                                             <SelectItem value={TaskStatus.IN_REVIEW}>
-                                                IN_PREVIEW
+                                                IN_REVIEW
                                             </SelectItem>
                                             <SelectItem value={TaskStatus.TODO}>
                                                 TODO
