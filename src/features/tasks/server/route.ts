@@ -16,6 +16,43 @@ import { Project } from "@/features/projects/types";
 
 
 const app = new Hono()
+    .delete(
+        "/:taskId",
+        sessionMiddleware,
+        async (c) => {
+            const user = c.get("user")
+            const databases = c.get("databases")
+            const { taskId } = c.req.param()
+
+
+            const task = await databases.getDocument<Task>(
+                DATABASE_ID,
+                TASKS_ID,
+                taskId
+            )
+
+
+            //  2 Check Membership
+            const member = await getMember({
+                databases,
+                workspaceId: task.workspaceId,
+                userId: user.$id,
+            })
+
+            if (!member) {
+                return c.json({ error: "Unauthorized" }, 401)
+            }
+
+            // 3 Delete Task
+            await databases.deleteDocument(
+                DATABASE_ID,
+                TASKS_ID,
+                taskId
+            )
+
+            return c.json({ data: { $id: taskId } })
+        }
+    )
     .get(
         "/",
         sessionMiddleware,
@@ -31,12 +68,12 @@ const app = new Hono()
             })
         ),
 
-        async(c) => {
+        async (c) => {
             const { users } = await createAdminClient()
             const databases = c.get("databases")
             const user = c.get("user")
 
-            const{
+            const {
                 workspaceId,
                 projectId,
                 status,
@@ -51,41 +88,41 @@ const app = new Hono()
                 userId: user.$id,
             })
 
-            if(!member){
+            if (!member) {
                 return c.json({ error: "Unauthorized" }, 401)
             }
 
             const query = [
-                Query.equal("workspaceId",workspaceId),
+                Query.equal("workspaceId", workspaceId),
                 Query.orderDesc("$createdAt"),
             ]
 
-            if(projectId) {
+            if (projectId) {
                 console.log("projectId: ", projectId)
                 query.push(Query.equal("projectId", projectId))
             }
 
-            if(status) {
+            if (status) {
                 console.log("status: ", status)
                 query.push(Query.equal("status", status))
             }
 
-            if(assigneeId) {
+            if (assigneeId) {
                 console.log("assigneeId: ", assigneeId)
                 query.push(Query.equal("assigneeId", assigneeId))
             }
 
-            if(dueDate) {
+            if (dueDate) {
                 console.log("dueDate: ", dueDate)
                 query.push(Query.equal("dueDate", dueDate))
             }
 
-            if(search) {
+            if (search) {
                 console.log("search: ", search)
                 query.push(Query.search("name", search))
             }
 
-            const tasks =  await databases.listDocuments<Task>(
+            const tasks = await databases.listDocuments<Task>(
                 DATABASE_ID,
                 TASKS_ID,
                 query,
@@ -119,15 +156,15 @@ const app = new Hono()
             )
 
             const populatedTasks = tasks.documents.map((task) => {
-                const project =  projects.documents.find(
+                const project = projects.documents.find(
                     (project) => project.$id === task.projectId,
                 )
 
-                const assignee =  assignees.find(
+                const assignee = assignees.find(
                     (assignee) => assignee.$id === task.assigneeId,
                 )
 
-                return{
+                return {
                     ...task,
                     project,
                     assignee,
@@ -135,7 +172,7 @@ const app = new Hono()
             })
 
             return c.json({
-                data:{
+                data: {
                     ...tasks,
                     documents: populatedTasks,
                 }
@@ -147,7 +184,7 @@ const app = new Hono()
         "/",
         sessionMiddleware,
         zValidator("json", createTaskSchema),
-        async(c) => {
+        async (c) => {
             const user = c.get("user")
             const databases = c.get("databases")
             const {
@@ -165,7 +202,7 @@ const app = new Hono()
                 userId: user.$id
             })
 
-            if(!member){
+            if (!member) {
                 return c.json({ error: "Unauthorized" }, 401)
             }
 
@@ -174,16 +211,16 @@ const app = new Hono()
                 TASKS_ID,
                 [
                     Query.equal("status", status),
-                    Query.equal("workspaceId",workspaceId),
+                    Query.equal("workspaceId", workspaceId),
                     Query.orderDesc("position"),
                     Query.limit(1),
                 ]
             )
 
-            const newPosition = 
+            const newPosition =
                 highestPositionTask.documents.length > 0
-                ? highestPositionTask.documents[0].position + 1000
-                :1000
+                    ? highestPositionTask.documents[0].position + 1000
+                    : 1000
 
             const task = await databases.createDocument(
                 DATABASE_ID,
@@ -200,7 +237,7 @@ const app = new Hono()
                 }
             )
 
-            return c.json({ data:task })
+            return c.json({ data: task })
         }
     )
 
