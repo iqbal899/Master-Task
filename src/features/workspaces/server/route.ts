@@ -14,16 +14,16 @@ import { Workspace } from "../types";
 
 const app = new Hono()
     .get("/", sessionMiddleware, async (c) => {
-        const user = c.get("user") 
+        const user = c.get("user")
         const databases = c.get("databases")
 
-        const members =  await databases.listDocuments(
+        const members = await databases.listDocuments(
             DATABASE_ID,
             MEMBERS_ID,
             [Query.equal("userId", [user.$id])]
         )
 
-        if(members.total === 0) {
+        if (members.total === 0) {
             return c.json({ data: { documents: [], total: 0 } })
         }
 
@@ -40,6 +40,55 @@ const app = new Hono()
 
         return c.json({ data: workspaces })
     })
+    .get(
+        "/:workspaceId",
+        sessionMiddleware,
+        async (c) => {
+            const user = c.get("user");
+            const databases = c.get("databases");
+            const { workspaceId } = c.req.param();
+
+            const member = await getMember({
+                databases,
+                workspaceId,
+                userId: user.$id,
+            });
+
+            if (!member) {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+            const workspace = await databases.getDocument<Workspace>(
+                DATABASE_ID,
+                WORKSPACES_ID,
+                workspaceId,
+            );
+
+            return c.json({ data: workspace });
+        }
+    )
+    .get(
+        "/:workspaceId/info",
+        sessionMiddleware,
+        async (c) => {
+            const databases = c.get("databases");
+            const { workspaceId } = c.req.param();
+
+            const workspace = await databases.getDocument<Workspace>(
+                DATABASE_ID,
+                WORKSPACES_ID,
+                workspaceId,
+            );
+
+            return c.json({
+                data: {
+                    $id: workspace.$id,
+                    name: workspace.name,
+                    imageUrl: workspace.imageUrl
+                }
+            });
+        }
+    )
     .post(
         "/",
         zValidator("form", createWorkspaceSchema),
@@ -89,7 +138,7 @@ const app = new Hono()
                 {
                     userId: user.$id,
                     workspaceId: workspace.$id,
-                    role:MemberRole.ADMIN,
+                    role: MemberRole.ADMIN,
                 }
             )
 
@@ -132,7 +181,7 @@ const app = new Hono()
                     `?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`
 
 
-            } else { 
+            } else {
                 uploadedImageUrl = image
             }
 
@@ -148,7 +197,7 @@ const app = new Hono()
 
             return c.json({ data: workspace })
 
-        }  
+        }
     )
     .delete(
         "/:workspaceId",
@@ -169,7 +218,7 @@ const app = new Hono()
                 return c.json({ error: "Unauthorized" }, 401)
             }
             //todo:delete members, projects, tasks related to this workspace
-            
+
             await databases.deleteDocument(
                 DATABASE_ID,
                 WORKSPACES_ID,
@@ -197,8 +246,8 @@ const app = new Hono()
             if (!member || member.role !== MemberRole.ADMIN) {
                 return c.json({ error: "Unauthorized" }, 401)
             }
-            
-            
+
+
             const workspace = await databases.updateDocument(
                 DATABASE_ID,
                 WORKSPACES_ID,
@@ -230,7 +279,7 @@ const app = new Hono()
 
             if (member) {
                 return c.json({ error: "Already a member of this workspace" }, 400)
-            } 
+            }
 
             const workspace = await databases.getDocument<Workspace>(
                 DATABASE_ID,
@@ -256,6 +305,6 @@ const app = new Hono()
             return c.json({ data: newMember })
         }
     )
-    
+
 
 export default app;

@@ -90,13 +90,7 @@ export const EditProjectForm = ({
                 param: {
                     projectId: initialValues.$id,
                 },
-            },
-            {
-                onSuccess: () => {
-                    form.reset()
-                },
-            }
-        )
+            })
     }
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

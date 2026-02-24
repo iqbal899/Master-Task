@@ -1,38 +1,39 @@
-import { toast } from "sonner"; 
-import { useMutation, useQueryClient} from "@tanstack/react-query";
+import { toast } from "sonner";
 import { InferRequestType, InferResponseType } from "hono";
-import {client} from "@/lib/rpc"
-import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-type ResponseType = InferResponseType<typeof client.api.projects[":projectId"]["$patch"], 200>
-type RequestType = InferRequestType<typeof client.api.projects[":projectId"]["$patch"]>
+import { client } from "@/lib/rpc";
 
-export const useUpdateProject = () =>{
-    const router = useRouter()
-    const queryClient = useQueryClient()
-    const mutation = useMutation<
-    ResponseType, 
+type ResponseType = InferResponseType<typeof client.api.projects[":projectId"]["$patch"], 200>;
+type RequestType = InferRequestType<typeof client.api.projects[":projectId"]["$patch"]>;
+
+export const useUpdateProject = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation<
+    ResponseType,
     Error,
     RequestType
-    >({
-        mutationFn: async ({ form,param }) =>{
-            const response = await client.api.projects[":projectId"]["$patch"]({form, param});
-            
-            if(!response.ok) {
-                throw new Error("Failed to update project")
-            }
-            return await response.json();
-        },
-        onSuccess: ({ data }) => {
-            toast.success("Project updated")
-            router.refresh()
-            queryClient.invalidateQueries({queryKey: ["projects"]});
-            queryClient.invalidateQueries({queryKey: ["project",data.$id]})
-        },
-        onError: () => {
-            toast.error("Failed to update project")
-        }
-    })
+  >({
+    mutationFn: async ({ form, param }) => {
+      const response = await client.api.projects[":projectId"]["$patch"]({ form, param });
 
-    return mutation
-}
+      if (!response.ok) {
+        throw new Error("Failed to update project");
+      }
+
+      return await response.json();
+    },
+    onSuccess: ({ data }) => {
+      toast.success("Project updated");
+
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["project", data.$id] });
+    },
+    onError: () => {
+      toast.error("Failed to update project");
+    }
+  });
+
+  return mutation;
+};
