@@ -6,7 +6,6 @@ import { useWorkspaceId } from "../hooks/use-workspace-id"
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"

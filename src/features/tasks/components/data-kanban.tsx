@@ -8,7 +8,6 @@ import {
 } from "@hello-pangea/dnd"
 
 import { Task, TaskStatus } from "../types";
-import { TaskActions } from "./task-actions";
 import { KanbanColumnHeader } from "./kanban-column-header";
 import { KanbanCard } from "./kanban-card";
 

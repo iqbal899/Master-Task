@@ -4,8 +4,6 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTaskSchema } from "../schemas";
 import { useForm } from "react-hook-form"
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -31,7 +29,6 @@ import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
 
-import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { MemberAvatar } from "@/features/members/components/members-avatar";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 
@@ -46,11 +43,7 @@ interface EditTaskFormProps {
 }
 
 export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialValues }: EditTaskFormProps) => {
-    const workspaceId = useWorkspaceId()
-    const router = useRouter();
     const { mutate, isPending } = useUpdateTask()
-
-    const inputRef = useRef<HTMLInputElement>(null)
 
     const form = useForm<z.infer<typeof createTaskSchema>>({
         resolver: zodResolver(createTaskSchema.omit({ workspaceId: true , description: true})),
@@ -63,7 +56,7 @@ export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialV
 
     const onSubmit = (values: z.infer<typeof createTaskSchema>) => {
         mutate({ json: values , param:{ taskId: initialValues.$id}}, {
-            onSuccess: ({ data }) => {
+            onSuccess: () => {
                 form.reset()
                 onCancel?.();
             }

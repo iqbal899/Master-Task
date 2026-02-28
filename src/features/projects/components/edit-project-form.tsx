@@ -254,7 +254,7 @@ export const EditProjectForm = ({
                             size="sm"
                             className="w-fit ml-auto mt-6"
                             type="button"
-                            disabled={isPending}
+                            disabled={isPending || isDeletingProject}
                             onClick={handleDelete}
                         >
                             Delete Project

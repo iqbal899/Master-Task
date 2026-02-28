@@ -1,5 +1,5 @@
 "use client"
-import { useCreateProject } from "@/features/projects/api/use-create-project"
+
 import { useGetProjects } from "@/features/projects/api/use-get-projects"
 import { ProjectAvatar } from "@/features/projects/components/project-avatar"
 import { useCreateProjectModal } from "@/features/projects/hooks/use-create-project-modal"
@@ -7,7 +7,6 @@ import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { use } from "react"
 import { RiAddCircleFill } from "react-icons/ri"
 
 export const Projects = () => {

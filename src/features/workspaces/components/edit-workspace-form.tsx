@@ -19,11 +19,9 @@ import {
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useCreateWorkspace } from "../api/use-create-workspaces";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 import { ArrowLeftIcon, CopyIcon, ImageIcon } from "lucide-react";
-import { on } from "events";
 import { cn } from "@/lib/utils";
 import { Workspace } from "../types";
 import { useUpdateWorkspace } from "../api/use-update-workspaces copy";
@@ -125,6 +123,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
     return (
         <div className=" flex flex-col gap-y-4">
             <ResetDialog />
+            <DeleteDialog />
             <Card className="w-full h-full border-none shadow-none">
                 <CardHeader className="flex flex-row items-center gap-x-4 p-7 space-y-0">
                     <Button size="sm" variant="secondary" onClick={onCancel ? onCancel : () => router.push(`/workspaces/${initialValues.$id}`)}>
