@@ -190,17 +190,25 @@ export const MembersList = ({ data, total }: MembersListProps) => {
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.map((member) => (
             <li key={member.$id}>
-              <Card className="shadow-none rounded-lg overflow-hidden">
-                <CardContent className="p-3 flex flex-col items-center gap-x-2">
+              <Card className="shadow-none rounded-lg">
+                <CardContent className="p-4 flex flex-col items-center gap-y-2">
                   <MemberAvatar
                     className="size-12"
                     name={member.name}
                   />
-                  <div className="flex flex-col items-center overflow-hidden">
-                    <p className="text-lg font-medium line-clamp-1">
+
+                  <div className="flex flex-col items-center w-full">
+                    <p
+                      className="text-lg font-medium truncate w-full text-center"
+                      title={member.name}
+                    >
                       {member.name}
                     </p>
-                    <p className="text-sm text-muted-foreground line-clamp-1">
+
+                    <p
+                      className="text-sm text-muted-foreground truncate w-full text-center"
+                      title={member.email}
+                    >
                       {member.email}
                     </p>
                   </div>
@@ -208,6 +216,7 @@ export const MembersList = ({ data, total }: MembersListProps) => {
               </Card>
             </li>
           ))}
+
           <li className="text-sm text-muted-foreground text-center hidden first-of-type:block">
             No members found
           </li>
