@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MasterTask — Full Stack Project Management Platform
 
-## Getting Started
+## Overview
 
-First, run the development server:
+MasterTask is a full-stack project management platform inspired by Jira. It is designed to help teams organize work efficiently through structured workflows, task tracking, and collaboration.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The application supports workspace-based collaboration, project organization, and multiple task views such as Kanban and Calendar. The focus of this project is on scalable architecture, type-safe APIs, and efficient data handling.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Workspace-based multi-tenant system
+- Project and task management (CRUD operations)
+- Kanban board with drag-and-drop functionality
+- Calendar view for task scheduling
+- Table view for structured task management
+- Role-based access control (Admin and Member)
+- Invite system for workspace collaboration
+- Authentication (Email/Password and OAuth)
+- Image upload support for projects
+- Task filtering by status, assignee, project, and due date
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Frontend
+- Next.js (App Router)
+- React
+- TypeScript
+- Tailwind CSS
+- ShadCN UI
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Backend
+- Hono (Type-safe API framework)
+- Appwrite (Authentication, Database, Storage)
 
-## Deploy on Vercel
+### State Management
+- React Query (TanStack Query)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Validation
+- Zod
+- React Hook Form
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Architecture
+
+- Feature-based modular structure
+- Type-safe API layer using Hono RPC
+- Middleware-based authentication
+- Server-state management using React Query
+- URL-based state management for filters and views
+
+---
+
+## User Flow
+
+1. User signs in using email/password or OAuth.
+2. User creates or joins a workspace.
+3. Projects are created inside a workspace.
+4. Tasks are created and assigned to members.
+5. Tasks are managed using Table, Kanban, or Calendar views.
+6. Admin users manage members and workspace settings.
+
+---
+
+## Database Design
+
+The application uses a collection-based NoSQL structure.
+
+### Collections
+
+Workspaces
+- name
+- imageUrl
+- inviteCode
+- userId
+
+Members
+- userId
+- workspaceId
+- role
+- name
+- email
+
+Projects
+- name
+- imageUrl
+- workspaceId
+
+Tasks
+- name
+- status
+- workspaceId
+- projectId
+- assigneeId
+- dueDate
+- position
+
+---
+
+## Key Design Decisions
+
+- Multi-tenant architecture using workspaceId
+- Role-based access control using members collection
+- Position-based ordering for efficient Kanban updates
+- Bulk updates to reduce API calls
+- Denormalized data for faster UI rendering
+
+---
+
+## API Design
+
+- RESTful endpoints
+- Type-safe communication using Hono RPC
+- Middleware-based authentication and authorization
+- Structured request handling (params, query, JSON)
+
+---
