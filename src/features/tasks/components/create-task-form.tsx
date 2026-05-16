@@ -173,7 +173,7 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
                                         </FormControl>
                                         <FormMessage/>
                                         <SelectContent>
-                                            <SelectItem value={TaskStatus.IN_PROGRESS}>
+                                            <SelectItem value={TaskStatus.BACKLOG}>
                                                 BACKLOG
                                             </SelectItem>
                                             <SelectItem value={TaskStatus.IN_PROGRESS}>
