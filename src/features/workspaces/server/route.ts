@@ -10,7 +10,7 @@ import { getMember } from "@/features/members/utils";
 import { z } from "zod";
 import { Workspace } from "../types";
 import { TaskStatus } from "@/features/tasks/types";
-import { startOfMonth, endOfMonth, subMonths } from "date-fns";
+import { endOfMonth, subMonths } from "date-fns";
 
 const app = new Hono()
     .get("/", sessionMiddleware, async (c) => {

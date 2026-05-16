@@ -7,7 +7,7 @@ import { ID, Query } from "node-appwrite";
 import { z } from "zod";
 import { createProjectSchema, updateProjectSchema } from "../schemas";
 import { Project } from "../types";
-import { endOfMonth, startOfMonth, subMonths } from "date-fns";
+import { endOfMonth, subMonths } from "date-fns";
 import { TaskStatus } from "@/features/tasks/types";
 
 const app = new Hono()
